@@ -1,0 +1,172 @@
+ {% extends 'master_page.html' %} {% load static %} {% block title %}eVeda{% endblock %}{% block content %}
+
+<section class="bg-[#FCF8F1] bg-opacity-30 py-10 sm:py-16 lg:py-14">
+    <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
+            <div>
+                <p class="text-base font-semibold tracking-wider text-blue-600 uppercase">
+                    Your gateway to endless stories.
+                </p>
+                <h1 class="mt-4 text-4xl font-bold text-black lg:mt-8 sm:text-6xl xl:text-7xl">
+                    Discover, Read, and Elevate Your Mind
+                </h1>
+                <p class="mt-4 text-base text-black lg:mt-8 sm:text-xl">
+                    Explore a world of knowledge, imagination, and adventure with our wide range of eBooks. Whether you’re a fiction lover, business enthusiast, or a curious learner, we have something for everyone. Start your journey today!
+                </p>
+
+                <a href="#categories" title="" class="inline-flex items-center px-6 py-4 mt-8 font-semibold text-black transition-all duration-200 bg-yellow-300 rounded-full lg:mt-12 hover:bg-yellow-400 focus:bg-yellow-400" role="button">
+                Browse Categories
+                <svg
+                  class="w-6 h-6 ml-8 -mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                
+              </a>
+            </div>
+
+            <div>
+                <img class="w-full rounded-md" src="{% static 'assets/hero.jpg' %}" alt="" />
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between mb-5">
+        <h1 class="lg:text-3xl text-xl">Now Trending</h1>
+        <a href="{% url 'all_books' %}?filter=trending" class="font-paragraph font-semibold">See All</a>
+    </div>
+    {% include "components/carousel.html" with carousel_id="trending-carousel" books=trending_books %}
+
+</section>
+
+
+<section class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:mt-10 mt-5" id="categories">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">Explore Book Categories</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" role="list" aria-label="Categories">
+        {% if categories %} {% for category in categories %}
+        <a href="{% url 'books' category.category_id %}" class="group bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" role="button" tabindex="0" aria-label="Fiction Category">
+
+            <h2 class="mt-4 text-xl font-semibold text-gray-800 text-center">{{category.name}}</h2>
+            <p class="mt-2 text-gray-600 text-center text-sm">{{category.description}}</p>
+        </a>
+        {% endfor %} {% else %}
+        <h1>No data found</h1>{% endif %}
+
+    </div>
+
+</section>
+
+<section class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:mt-10 mt-5 ">
+    <div class="flex items-center justify-between mb-5 ">
+        <h1 class="lg:text-3xl text-xl ">New Arrivals</h1>
+        <a href="{% url 'all_books' %}?filter=new_arrivals" class="font-paragraph font-semibold ">See All</a>
+    </div>
+    {% include "components/carousel.html " with carousel_id="new-carousel " books=new_arrival_books %}
+
+</section>
+
+<section class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:mt-10 mt-5 ">
+    <div class="relative overflow-hidden mb-12 rounded-2xl bg-gradient-to-r from-orange-400 via-yellow-400 to-blue-500 p-1">
+        <div class="relative bg-gradient-to-r from-orange-100 to-blue-100 rounded-xl p-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="text-center md:text-left mb-6 md:mb-0">
+                    <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-orange-600 to-blue-600 bg-clip-text text-transparent animate-pulse">Big Sale: Up to 50% Off!</h2>
+                    <p class="text-xl mt-2 text-gray-700">Explore Bestsellers, Classics, and More!</p>
+                    <a href="{% url 'all_books' %}" class="inline-block  mt-5 bg-gradient-to-r from-orange-500 to-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-blue-600 transform hover:-translate-y-1 transition-all duration-300">Shop Now</a>
+                </div>
+                <div class="relative">
+                    <div class="flex items-center space-x-4">
+                        <div class="animate-bounce delay-100">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="Book 1" class="w-24 h-32 object-cover rounded-lg shadow-lg transform rotate-6">
+                        </div>
+                        <div class="animate-bounce delay-200">
+                            <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="Book 2" class="w-24 h-32 object-cover rounded-lg shadow-lg transform -rotate-6">
+                        </div>
+                        <div class="animate-bounce delay-300">
+                            <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="Book 3" class="w-24 h-32 object-cover rounded-lg shadow-lg transform rotate-3">
+                        </div>
+                    </div>
+                    <div class="absolute top-0 right-0 animate-spin-slow">
+                        <i class="fas fa-glasses text-4xl text-blue-600 opacity-50"></i>
+                    </div>
+                    <div class="absolute bottom-0 left-0 animate-bounce">
+                        <i class="fas fa-bookmark text-4xl text-orange-600 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+<section class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:mt-10 mt-5 ">
+    <div class="flex items-center justify-between mb-5 ">
+        <h1 class="lg:text-3xl text-xl ">Best Sellers</h1>
+        <a href="{% url 'all_books' %}?filter=best_sellers" class="font-paragraph font-semibold ">See All</a>
+    </div>
+    {% include "components/carousel.html " with carousel_id="now-carousel " books=best_seller_books %}
+
+</section>
+
+<section class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:mt-10 mt-5 ">
+    <div class="flex items-center justify-center w-full">
+        <div class="relative w-full  bg-gradient-to-r from-[#f3e7dd] to-[#e7f0f7] rounded-2xl overflow-hidden ">
+            <div class="absolute top-0 left-0 w-full h-full">
+                <div class="absolute inset-0 bg-white/10 backdrop-blur-sm">
+                    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnPjxjaXJjbGUgY3g9JzUwJScgY3k9JzUwJScgcj0nNCcgZmlsbD0nIzAwMDAnIG9wYWNpdHk9JzAuMDUnLz48L3N2Zz4='); background-size: 24px 24px;"></div>
+                </div>
+            </div>
+            <div class="relative flex flex-col md:flex-row items-center justify-between p-8 md:p-12 gap-8">
+                <div class="flex-1 text-center md:text-left">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 tracking-tight">Winter Reads Sale:<br/><span class="text-blue-600">Flat 30% Off!</span></h2>
+                    <p class="text-lg md:text-xl text-gray-600 mb-6">Discover New Releases & Timeless Classics</p>
+                    <a href="{% url 'all_books' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">Shop Now</a>
+                </div>
+                <div class="relative w-full md:w-1/2 flex justify-center items-center">
+                    <img src="https://images.unsplash.com/photo-1610116306796-6fea9f4fae38?auto=format&fit=crop&w=500" alt="Winter Reading" class="w-64 h-64 object-cover rounded-lg shadow-2xl transform -rotate-6" />
+                    <div class="absolute -bottom-4 -right-4">
+                        <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=200" alt="Coffee Cup" class="w-24 h-24 object-cover rounded-full shadow-xl border-4 border-white" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+<div class="bg-gray-50 py-16 ">
+    <div class="max-w-3xl mx-auto px-10 py-10 bg-white shadow-md rounded-lg">
+        <!-- Form Heading -->
+        <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Enquire Now</h2>
+        <p class="text-gray-600 text-center mb-8">
+            Fill out the form below with your details, and we’ll get back to you as soon as possible.
+        </p>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %} {{ form.as_p }}
+            <div class="text-center">
+                <button type="submit" class="bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Submit Enquiry
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

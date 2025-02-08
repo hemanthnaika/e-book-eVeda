@@ -1,0 +1,49 @@
+{% extends 'master_page.html' %} {% block title %}Order #{{ order.id }}{% endblock %} {% block content %}
+<div class="w-full px-3 lg:px-10">
+    <!-- Order Header -->
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-6">Order #{{ order.id }}</h1>
+
+    <div class="bg-white p-6 shadow-xl rounded-xl mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <p class="text-gray-500">Order Date</p>
+                <p class="text-xl font-semibold text-gray-900">{{ order.order_date|date:"M d, Y H:i" }}</p>
+            </div>
+            <div>
+                <p class="text-gray-500">Status</p>
+                <p class="text-xl font-semibold text-green-600">{{ order.get_status_display }}</p>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <p class="text-gray-500">Total Amount</p>
+            <p class="text-3xl font-bold text-blue-600">₹{{ order.total_amount }}</p>
+        </div>
+
+        <div class="mt-6">
+            <p class="text-gray-500">Shipping Address</p>
+            <p class="text-gray-800">{{ order.shipping_address }}</p>
+        </div>
+    </div>
+
+    <!-- Order Items Section (Responsive Grid) -->
+    <h2 class="text-2xl font-extrabold text-gray-900 mb-4">Order Items</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        {% for item in order_items %}
+        <div class="bg-white p-6 shadow-lg rounded-xl hover:shadow-2xl transition duration-300">
+            <!-- Book Image -->
+            <div class="h-72 overflow-hidden ">
+                <img class="w-full h-full object-contain rounded-lg" src="{{ item.book.cover_image.url}}" alt="{{ item.book.title }}">
+            </div>
+            <div>
+                <p class="text-xl font-semibold text-gray-800">{{ item.book.title }}</p>
+                <p class="text-lg text-gray-600">Quantity: {{ item.quantity }}</p>
+                <p class="text-lg text-gray-600">Price: ₹{{ item.get_total_price }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+</div>
+{% endblock %}

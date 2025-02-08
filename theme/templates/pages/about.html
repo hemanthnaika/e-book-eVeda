@@ -1,0 +1,55 @@
+{% extends 'master_page.html' %} {% load static %} {% block title %}eVeda | About{% endblock %}{% block content %}
+<div class="bg-gray-100">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-center py-16">
+        <h1 class="text-4xl font-bold mb-4">Empowering Your Love for Reading</h1>
+        <p class="text-lg max-w-2xl mx-auto">
+            At <span class="font-semibold">eVeda</span>, we make reading accessible, affordable, and enjoyable for everyone, anywhere.
+        </p>
+        <a href="{% url 'all_books' %}" class="mt-6 inline-block bg-white text-blue-600 font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-200">
+        Browse Our Collection
+      </a>
+    </section>
+
+    <!-- Who We Are Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Who We Are</h2>
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <img src="https://images.unsplash.com/photo-1667312939934-60fc3bfa4ec0?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="About Us" class="w-full h-56 object-cover md:w-1/2 rounded-lg shadow-lg"
+                />
+                <div class="text-gray-700 space-y-4">
+                    <p>
+                        <span class="font-semibold">eVeda </span> started with a vision to bring the joy of reading to readers around the globe. We believe that knowledge and stories should be accessible to everyone, everywhere.
+                    </p>
+                    <p>
+                        Our curated collection includes eBooks from diverse genres, from fiction and self-help to academic resources, catering to all kinds of readers.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Story Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8">Our Story</h2>
+            <p class="text-gray-700 max-w-4xl mx-auto mb-6">
+                Founded in 2002, <span class="font-semibold">eVeda </span> was born from a passion for literature and technology. What started as a small collection of eBooks has now become a vibrant digital library serving thousands of readers.
+            </p>
+            <p class="text-gray-700 max-w-4xl mx-auto">
+                We are committed to creating a seamless reading experience, empowering readers with easy access to books in digital formats, and fostering a community of book lovers.
+            </p>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-16 bg-blue-600 text-white text-center">
+        <h2 class="text-3xl font-bold mb-4">Join Us on This Journey</h2>
+        <p class="text-lg mb-6">Discover the world of eBooks with us and find your next favorite read.</p>
+        <a href="{% url 'register' %}" class="inline-block bg-white text-blue-600 font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-200">
+        Get Started
+      </a>
+    </section>
+</div>
+{% endblock %}

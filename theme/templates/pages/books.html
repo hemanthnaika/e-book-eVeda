@@ -1,0 +1,46 @@
+{% extends 'master_page.html' %} {% load static %}{% block title %}eVeda | books{% endblock %}{% block content %}
+<div class="w-full px-3 lg:px-10">
+    <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-xl shadow-md border border-indigo-100">
+
+        {% if category %}
+        <h1 class="text-3xl font-bold">{{category}}</h1>{% else %}
+        <h1 class="text-3xl font-bold">All Books</h1> {% endif %}
+    </div>
+
+    <!-- Book Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-y-10 gap-x-5">
+        {% if books %} {% for book in books %} {% include 'components/card.html' with book=book %} {% endfor %} {% else %}
+        <h1>No data found</h1>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-12 flex justify-center">
+        <nav class="flex items-center gap-3">
+            {% if books.has_previous %}
+            <a href="?page={{ books.previous_page_number }}&filter={{ request.GET.filter }}" class="px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-colors">
+                    Previous
+                </a> {% else %}
+            <span class="px-4 py-2 rounded-lg border border-gray-300 text-gray-400 cursor-not-allowed">
+                    Previous
+                </span> {% endif %} {% for num in books.paginator.page_range %} {% if books.number == num %}
+            <span class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+                        {{ num }}
+                    </span> {% else %}
+            <a href="?page={{ num }}&filter={{ request.GET.filter }}" class="px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-colors">
+                        {{ num }}
+                    </a> {% endif %} {% endfor %} {% if books.has_next %}
+            <a href="?page={{ books.next_page_number }}&filter={{ request.GET.filter }}" class="px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-colors">
+                    Next
+                </a> {% else %}
+            <span class="px-4 py-2 rounded-lg border border-gray-300 text-gray-400 cursor-not-allowed">
+                    Next
+                </span> {% endif %}
+        </nav>
+    </div>
+
+</div>
+
+
+<script src="https://cdn.tailwindcss.com"></script>
+{% endblock %}

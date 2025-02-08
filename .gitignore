@@ -1,0 +1,72 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+*.env
+*.venv
+
+# Django-specific
+db.sqlite3
+*.sqlite3
+/media/
+*.log
+*.pot
+*.pyc
+
+# Ignore sensitive settings (e.g., local settings)
+config/settings/local.py
+config/settings/*.local
+.env
+
+# Ignore migrations cache
+**/migrations/*.pyc
+**/migrations/__pycache__/
+
+# Static and media files
+/static/
+staticfiles/
+media/
+
+# Ignore package dependencies
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Node.js dependencies (if frontend assets are used)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE and editor settings
+.idea/
+.vscode/
+*.swp
+*~
+*.sublime-workspace
+*.sublime-project
+
+# Docker
+docker-compose.override.yml
+*.pid
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.py,cover
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# MacOS files
+.DS_Store

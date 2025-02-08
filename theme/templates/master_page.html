@@ -1,0 +1,60 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}{% endblock %}
+    </title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" /> {% tailwind_css %}
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}">
+</head>
+
+<body class="bg-gray-50 relative">
+    {% include 'layout/navbar.html'%}{% if messages %}
+    <div class="fixed top-4 right-4 space-y-2" id="alert-container">
+        {% for message in messages %}
+        <div class="px-4 py-3 w-96 rounded shadow-lg border relative {{ message.tags }} 
+                    {% if message.tags == 'success' %}bg-green-100 border-green-400 text-green-700{% endif %}
+                    {% if message.tags == 'error' %}bg-red-100 border-red-400 text-red-700{% endif %}
+                    {% if message.tags == 'info' %}bg-blue-100 border-blue-400 text-blue-700{% endif %}
+                    ">
+            {{ message }}
+            <button class="absolute top-1 right-0 px-3 py-1 text-lg font-bold" onclick="this.parentElement.remove();">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %} {% block content %} {% endblock %} {% include 'layout/footer.html'%}
+    <script src="{% static 'js/app.js' %}"></script>
+    <script>
+        // Close the alert when the close button is clicked
+        document.getElementById("close-alert").addEventListener("click", function() {
+            document.getElementById("alert").classList.add("hidden");
+        });
+
+        // Function to show the alert dynamically
+        function showAlert(message, type = "error") {
+            const alert = document.getElementById("alert");
+            const alertMessage = document.getElementById("alert-message");
+
+            // Update alert content and style based on type
+            alertMessage.textContent = message;
+            alert.className = `fixed top-4 right-4 px-4 py-3 rounded shadow-lg z-50 border ${
+                type === "success"
+                    ? "bg-green-100 border-green-400 text-green-700"
+                    : "bg-red-100 border-red-400 text-red-700"
+            }`;
+
+            // Show the alert
+            alert.classList.remove("hidden");
+        }
+
+        // Example: Show a success alert after 2 seconds
+        setTimeout(() => showAlert("Your operation was successful!", "success"), 2000);
+    </script>
+
+</body>
+
+</html>

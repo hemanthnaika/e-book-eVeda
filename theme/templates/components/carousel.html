@@ -1,0 +1,18 @@
+<div class="relative">
+    <!-- Left Navigation -->
+    <button class="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 z-10" onclick="moveCarousel('{{ carousel_id }}', -1)">
+      &larr;
+    </button>
+
+    <!-- Carousel Container -->
+    <div id="{{ carousel_id }}" class="flex space-x-4 overflow-hidden scroll-smooth">
+        {% if books %} {% for book in books %} {% include 'components/card.html' with book=book %} {% endfor %} {% else %}
+        <h1>No data found</h1>
+        {% endif %}
+    </div>
+
+    <!-- Right Navigation -->
+    <button class="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 z-10" onclick="moveCarousel('{{ carousel_id }}', 1)">
+      &rarr;
+    </button>
+</div>

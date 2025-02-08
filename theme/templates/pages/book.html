@@ -1,0 +1,43 @@
+{% extends 'master_page.html' %} {% load static %}{% block title %} eVeda | {{book.title}} {% endblock %} {% block content %}
+<main class="container  py-8 px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-3 gap-8">
+        <div class="md:col-span-1">
+
+            <img src="{{book.cover_image.url}}" alt="Book Cover" class="w-full h-96 object-contain rounded-lg ">
+
+            <a href="{% url 'add_to_cart' book.Book_id %}" class="font-bold text-center bg-yellow-300 px-4 py-2 rounded-md font-heading hover:bg-yellow-400 w-full inline-block mt-5">
+                Add to Cart
+            </a>
+
+
+        </div>
+
+        <div class="md:col-span-2">
+            <h1 class="text-3xl font-bold text-gray-900">{{book.title}}</h1>
+            <p class="text-xl text-gray-600 mt-2">By {{book.author}}</p>
+            <h1 class="text-3xl font-bold text-gray-900 mt-2">₹ {{book.price}}</h1>
+            <div class="mt-6">
+                <h2 class="text-xl font-semibold text-gray-900">Description</h2>
+                <p class="mt-2 text-gray-700 leading-relaxed">{{book.description}}</p>
+            </div>
+
+            <div class="mt-6 grid grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <h3 class="font-semibold text-gray-900">Genre</h3>
+                    <p class="text-gray-700">{{book.category}}</p>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-5">Related Books</h2>
+
+        {% include "components/carousel.html" with carousel_id="related-carousel" books=related_books %}
+
+    </div>
+
+
+</main>{% endblock %}

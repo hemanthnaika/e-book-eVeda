@@ -1,0 +1,102 @@
+{% extends 'master_page.html' %} {% load static %} {% block title %}eVeda | Profile{% endblock %}{% block content %}
+<main class="container mx-auto lg:px-20 px-5 py-8">
+
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div class="flex flex-col md:flex-row items-center gap-6">
+            <div>
+                <h1 class="text-2xl font-bold">Welcome back, {{ form.username.value|default:'' }}</h1>
+                <p class="text-gray-600">{{ user.email }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Account Details</h2>
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                <!-- Full Name -->
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Full Name</label>
+                    <input type="text" id="username" name="username" value="{{ form.username.value|default:'' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Enter your full name">
+                </div>
+
+                <!-- Email (Read-only) -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email (Read-only)</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" readonly class="mt-1 block w-full bg-gray-100 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 cursor-not-allowed">
+                </div>
+
+                <!-- Phone -->
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                    <input type="tel" id="phone" name="phone" value="{{ form.phone.value|default:'' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Enter your phone number">
+                </div>
+
+                <!-- Location -->
+                <div>
+                    <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                    <textarea id="location" name="location" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter your location">{{ form.location.value|default:'' }}</textarea>
+                </div>
+
+                <!-- Profile Picture -->
+                <div>
+                    <label for="profile_picture" class="block text-sm font-medium text-gray-700">Profile Picture</label>
+                    <input type="file" id="profile_picture" name="profile_picture" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">                    {% if user.profile_picture %}
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-600">Current Profile Picture:</p>
+                        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="mt-2 h-24 w-24 rounded-full shadow-md">
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-3 rounded-md shadow-sm">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+
+            <div class="container mx-auto px-2 py-8">
+                <h1 class="text-3xl font-extrabold text-gray-900 mb-6">My Orders</h1>
+
+                {% if orders %}
+                <div class="space-y-6">
+                    {% for order in orders %}
+                    <div class="bg-white p-4 ">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-base font-semibold text-gray-800">Order #{{ order.id }}</h2>
+                            <p class="text-base text-green-600 font-semibold">{{ order.get_status_display }}</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                            <div>
+                                <p class="text-gray-500 font-semibold">Order Date:</p>
+                                <p class="text-base text-gray-900">{{ order.order_date|date:"M d, Y H:i" }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 font-semibold">Total Amount:</p>
+                                <p class="text-base font-semibold text-blue-600">₹{{ order.total_amount }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500 font-semibold">Shipping Address:</p>
+                                <p class="text-base text-gray-800">{{ order.shipping_address }}</p>
+                            </div>
+                        </div>
+
+                        <div class="text-right">
+                            <a href="{% url 'order_detail' order.id %}" class="text-indigo-600 font-semibold hover:text-indigo-800 transition duration-200">View Details</a>
+                        </div>
+                    </div>
+                    <hr>{% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-600">You have no orders yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>{% endblock %}

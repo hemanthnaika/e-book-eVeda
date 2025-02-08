@@ -1,0 +1,116 @@
+{% extends 'master_page.html' %} {% load static %} {% block title %}eVeda|Checkout {% endblock %}{% block content %}
+<div class="lg:px-20 px-5">
+    <h2 class="text-2xl font-bold mb-6">Checkout</h2>
+    {% if cart.items.exists %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Order Summary -->
+        <div class="bg-white p-6 shadow rounded-lg">
+            <h1 class=" font-heading font-bold text-lg">Order Summary</h1>
+            <ul class="divide-y divide-gray-200">
+                {% for item in cart.items.all %}
+                <li class="flex justify-between items-center py-3 px-5">
+
+                    <div class="flex items-center gap-5">
+                        <img src="{{ item.book.cover_image.url}}" alt="{{ item.book.title }}" class="w-20 -20 rounded-md">
+                        <div>
+                            <h1 class=" font-paragraph font-bold text-gray-700">{{ item.book.title }}</h1>
+                            <h1 class=" font-paragraph font-bold text-gray-700">By : {{ item.book.author }}</h1>
+                            <h1 class=" font-paragraph font-bold text-gray-700">{{ item.book.price }} x {{ item.quantity }}</h1>
+
+                        </div>
+
+                    </div>
+
+                    <h1 class=" font-paragraph font-bold text-gray-700">₹ {{ item.get_total_price }}</h1>
+                </li>
+                {% endfor %}
+                <li class="flex justify-between py-3 border-t border-gray-300 px-6">
+                    <h1 class="text-lg font-medium text-gray-700 ">Total</h1>
+                    <span class="text-lg font-bold text-gray-900">₹{{ cart.get_total_price }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Shipping & Payment Details -->
+        <div class="bg-white p-6 shadow rounded-lg">
+            <h3 class="text-lg font-semibold mb-4">Shipping Details</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4 ">
+                    {% if user.is_authenticated %}
+                    <p class="text-sm font-medium text-gray-700 mt-4">Shipping Address: {{ location }}</p>
+
+                    <p class="text-sm font-medium text-gray-700 mt-4">Phone Number : {{ user.phone }}</p> {% endif %}
+                    <a href="{% url 'profile' %} " class="inline-block bg-yellow-400 py-2 px-3 rounded-md my-5 ">Update Address</a>
+                </div>
+
+            </form>
+            <button id="rzp-button" type="submit " class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ">
+                Place Order
+            </button>
+        </div>
+        <a href=""></a>
+    </div>
+    {% else %}
+    <p>Your cart is empty.</p>
+    {% endif %}
+</div>
+
+<!-- Razorpay Checkout Script -->
+<!-- Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ razorpay_key_id }}", // Razorpay Key ID
+        "amount": "{{ amount }}", // Amount in smallest currency unit (e.g., paise for INR)
+        "currency": "{{ currency }}", // Currency code (e.g., INR, USD)
+        "order_id": "{{ razorpay_order_id }}", // Razorpay Order ID
+        "handler": function(response) {
+            // Log the payment response for debugging
+            console.log("Razorpay Response:", response);
+
+            // Send payment details to the server for verification
+            fetch("{% url 'verify_payment' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}", // CSRF token for Django
+                        "Content-Type": "application/json" // JSON content type
+                    },
+                    body: JSON.stringify({
+                        "razorpay_payment_id": response.razorpay_payment_id,
+                        "razorpay_order_id": response.razorpay_order_id,
+                        "razorpay_signature": response.razorpay_signature
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Server Response:", data);
+
+                    if (data.status === "success") {
+                        // Redirect to the success page
+                        window.location.href = "{% url 'order_success' %}";
+                    } else {
+                        // Show error message on failure
+                        alert(data.message || "Payment verification failed. Please try again.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error during payment verification:", error);
+                    alert("An error occurred while processing the payment. Please try again.");
+                });
+        },
+        "theme": {
+            "color": "#3399cc" // Razorpay UI color theme
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+
+    // Bind Razorpay to the button
+    document.getElementById("rzp-button").onclick = function(e) {
+        rzp1.open(); // Open Razorpay checkout
+        e.preventDefault();
+    };
+</script>
+
+{% endblock %}

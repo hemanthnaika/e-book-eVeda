@@ -1,0 +1,52 @@
+{% extends 'master_page.html' %} {% load static %} {% block title %}eVeda | Authors{% endblock %}{% block content %}
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+
+    <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">All Authors</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for author in authors %}
+            <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                <a href="{% url 'author' author.author.id %}" title="" class="flex items-center space-x-4">
+                    <img src="{{ author.author.photo.url }}" alt="{{ author.author.first_name }}" class="h-20 w-20 rounded-full object-cover">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">{{ author.author }}</h3>
+                        <p class="text-sm text-gray-500">{{ author.top_category }}</p>
+                        <div class="mt-2 flex items-center space-x-2">
+                            <span class="text-sm text-gray-500">{{ author.book_count }} Books</span>
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+
+        <!-- Pagination Controls -->
+        <div class="mt-8 flex justify-center">
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                {% if authors.has_previous %}
+                <a href="?page={{ authors.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                Previous
+            </a> {% else %}
+                <span class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-gray-200 text-sm font-medium text-gray-400 cursor-not-allowed">
+                Previous
+            </span> {% endif %} {% for num in authors.paginator.page_range %} {% if authors.number == num %}
+                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-indigo-600 text-white text-sm font-medium">
+                    {{ num }}
+                </span> {% else %}
+                <a href="?page={{ num }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    {{ num }}
+                </a> {% endif %} {% endfor %} {% if authors.has_next %}
+                <a href="?page={{ authors.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                Next
+            </a> {% else %}
+                <span class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-gray-200 text-sm font-medium text-gray-400 cursor-not-allowed">
+                Next
+            </span> {% endif %}
+            </nav>
+        </div>
+    </section>
+
+</main>{% endblock %}
