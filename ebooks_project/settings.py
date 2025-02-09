@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-admidg*6^p*n+1jccmat^kg@(q__ave^t&b73*4i^0wxcks&%n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','eVeda.pythonanywhere.com']
 
 
 # Application definition
