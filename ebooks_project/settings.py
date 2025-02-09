@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-admidg*6^p*n+1jccmat^kg@(q__ave^t&b73*4i^0wxcks&%n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'django_browser_reload',
-    'ebooks_app'
+    'ebooks_app',
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -119,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -130,6 +132,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Add this to tell Django to look for additional static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+
+# Required for production if DEBUG is False
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -163,3 +174,4 @@ MESSAGE_TAGS = {
     messages.WARNING: 'bg-yellow-100 border-yellow-500 text-yellow-700',
     messages.ERROR: 'bg-red-100 border-red-500 text-red-700',
 }
+
