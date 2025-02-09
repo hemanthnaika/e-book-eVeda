@@ -21,7 +21,7 @@
         <h2 class="text-2xl font-bold mb-6">Books by {{ author.first_name }} {{ author.last_name }}</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
 
-            {% if books %} {% for book in books %} {% include 'components/card.html' with book=book %} {% endfor %} {% else %}
+            {% if books %} {% for book in books %} {% include './components/card.html' with book=book %} {% endfor %} {% else %}
             <h1>No data found</h1>
             {% endif %}
 

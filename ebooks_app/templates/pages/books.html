@@ -9,7 +9,7 @@
 
     <!-- Book Grid -->
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-y-10 gap-x-5">
-        {% if books %} {% for book in books %} {% include 'components/card.html' with book=book %} {% endfor %} {% else %}
+        {% if books %} {% for book in books %} {% include './components/card.html' with book=book %} {% endfor %} {% else %}
         <h1>No data found</h1>
         {% endif %}
     </div>

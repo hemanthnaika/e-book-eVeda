@@ -47,7 +47,7 @@
         <h1 class="lg:text-3xl text-xl">Now Trending</h1>
         <a href="{% url 'all_books' %}?filter=trending" class="font-paragraph font-semibold">See All</a>
     </div>
-    {% include "components/carousel.html" with carousel_id="trending-carousel" books=trending_books %}
+    {% include "./components/carousel.html" with carousel_id="trending-carousel" books=trending_books %}
 
 </section>
 
@@ -73,7 +73,7 @@
         <h1 class="lg:text-3xl text-xl ">New Arrivals</h1>
         <a href="{% url 'all_books' %}?filter=new_arrivals" class="font-paragraph font-semibold ">See All</a>
     </div>
-    {% include "components/carousel.html " with carousel_id="new-carousel " books=new_arrival_books %}
+    {% include "./components/carousel.html" with carousel_id="new-carousel " books=new_arrival_books %}
 
 </section>
 
@@ -118,7 +118,7 @@
         <h1 class="lg:text-3xl text-xl ">Best Sellers</h1>
         <a href="{% url 'all_books' %}?filter=best_sellers" class="font-paragraph font-semibold ">See All</a>
     </div>
-    {% include "components/carousel.html " with carousel_id="now-carousel " books=best_seller_books %}
+    {% include "./components/carousel.html" with carousel_id="now-carousel " books=best_seller_books %}
 
 </section>
 

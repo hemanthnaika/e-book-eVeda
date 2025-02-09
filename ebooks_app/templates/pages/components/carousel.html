@@ -6,7 +6,7 @@
 
     <!-- Carousel Container -->
     <div id="{{ carousel_id }}" class="flex space-x-4 overflow-hidden scroll-smooth">
-        {% if books %} {% for book in books %} {% include 'components/card.html' with book=book %} {% endfor %} {% else %}
+        {% if books %} {% for book in books %} {% include './card.html' with book=book %} {% endfor %} {% else %}
         <h1>No data found</h1>
         {% endif %}
     </div>
