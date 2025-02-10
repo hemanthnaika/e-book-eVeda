@@ -26,10 +26,7 @@ config/settings/*.local
 **/migrations/*.pyc
 **/migrations/__pycache__/
 
-# Static and media files
-/static/
-staticfiles/
-media/
+
 
 # Ignore package dependencies
 *.egg-info/
