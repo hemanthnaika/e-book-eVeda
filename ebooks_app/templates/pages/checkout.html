@@ -38,7 +38,7 @@
                 {% csrf_token %}
                 <div class="mb-4 ">
                     {% if user.is_authenticated %}
-                    <p class="text-sm font-medium text-gray-700 mt-4">Shipping Address: {{ location }}</p>
+                    <p class="text-sm font-medium text-gray-700 mt-4">Shipping Address: {{ user.location }}</p>
 
                     <p class="text-sm font-medium text-gray-700 mt-4">Phone Number : {{ user.phone }}</p> {% endif %}
                     <a href="{% url 'profile' %} " class="inline-block bg-yellow-400 py-2 px-3 rounded-md my-5 ">Update Address</a>
@@ -65,6 +65,7 @@
         "amount": "{{ amount }}", // Amount in smallest currency unit (e.g., paise for INR)
         "currency": "{{ currency }}", // Currency code (e.g., INR, USD)
         "order_id": "{{ razorpay_order_id }}", // Razorpay Order ID
+        "name": "eVeda",
         "handler": function(response) {
             // Log the payment response for debugging
             console.log("Razorpay Response:", response);
@@ -98,6 +99,11 @@
                     console.error("Error during payment verification:", error);
                     alert("An error occurred while processing the payment. Please try again.");
                 });
+        },
+        "prefill": {
+            "name": "{{ user.first_name }} {{ user.last_name }}", // User's full name
+            "email": "{{ user.email }}", // User's email
+            "contact": "{{ user.profile.phone_number }}" // User's contact (assuming you have `phone_number` in profile)
         },
         "theme": {
             "color": "#3399cc" // Razorpay UI color theme

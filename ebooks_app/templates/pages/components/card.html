@@ -1,7 +1,7 @@
 <div class="shadow-lg rounded-lg overflow-hidden min-w-40 bg-white hover:shadow-xl transform transition duration-300 ">
     <!-- Image Section -->
     <div class="h-72  bg-gray-100 overflow-hidden ">
-        <img class="w-full h-full object-contain rounded-lg" src="{{ book.cover_image.url}}" alt="{{ book.title }}">
+        {% if book.cover_image %} <img class="w-full h-full object-contain rounded-lg" src="{{ book.cover_image.url}}" alt="{{ book.title }}"> {% endif %}
     </div>
 
 

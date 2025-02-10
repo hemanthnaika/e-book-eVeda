@@ -133,10 +133,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Add this to tell Django to look for additional static files
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+
 
 
 # Required for production if DEBUG is False
@@ -171,7 +168,7 @@ MESSAGE_TAGS = {
     messages.DEBUG: 'bg-gray-100 border-gray-500 text-gray-700',
     messages.INFO: 'bg-blue-100 border-blue-500 text-blue-700',
     messages.SUCCESS: 'bg-green-100 border-green-500 text-green-700',
-    messages.WARNING: 'bg-yellow-100 border-yellow-500 text-yellow-700',
+    messages.WARNING: 'bg-yellow-400 border-yellow-500 text-yellow-700',
     messages.ERROR: 'bg-red-100 border-red-500 text-red-700',
 }
 

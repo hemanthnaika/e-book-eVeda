@@ -1,143 +1,126 @@
-from django.core.management.base import BaseCommand
-from django.utils import timezone
-from ebooks_app.models import User, Author, Category, Book, Cart, CartItem
-from faker import Faker
 import random
-from django.core.files.base import ContentFile
+import uuid
 import requests
+from django.core.files.base import ContentFile
+from django.core.management.base import BaseCommand
+from faker import Faker
+from django.utils import timezone
+from ebooks_app.models import User, Author, Category, Book, Cart, CartItem, Order
+
+fake = Faker()
+
+# Function to fetch a random image from the internet
+def fetch_image(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return ContentFile(response.content, name=f"{uuid.uuid4()}.jpg")
+    except Exception as e:
+        print(f"Failed to fetch image: {e}")
+    return None
 
 class Command(BaseCommand):
-    help = "Seed the database with sample data"
+    help = "Generate fake data for the database"
 
     def handle(self, *args, **kwargs):
-        fake = Faker()
-
-        # Helper function to fetch a fake image
-        def fetch_fake_image():
-            response = requests.get("https://picsum.photos/200/300", stream=True)
-            if response.status_code == 200:
-                return ContentFile(response.content, name=f"{fake.word()}.jpg")
-            return None
+        self.stdout.write(self.style.SUCCESS("Generating Fake Data..."))
 
         # Create Users
         users = []
-        for _ in range(50):
-            users.append(User.objects.create_user(
-                email=fake.unique.email(),
+        for _ in range(5):
+            user = User.objects.create(
                 username=fake.user_name(),
-                password="password123",
-                profile_picture=fetch_fake_image(),
+                email=fake.unique.email(),
+                phone=fake.phone_number()[:10],
                 location=fake.city(),
-                phone=fake.msisdn()[:10],
-                is_admin=False
-            ))
+                is_admin=fake.boolean(),
+            )
+            # Fetch profile picture
+            user.profile_picture.save(
+                f"{user.username}.jpg", fetch_image("https://picsum.photos/200")
+            )
+            users.append(user)
+
+        self.stdout.write(self.style.SUCCESS(f"Created {len(users)} Users."))
 
         # Create Authors
         authors = []
-        for _ in range(50):
-            authors.append(Author.objects.create(
+        for _ in range(5):
+            author = Author.objects.create(
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
-                bio=fake.text(max_nb_chars=200),
-                date_of_birth=fake.date_of_birth(minimum_age=20, maximum_age=70),
+                bio=fake.text(),
+                date_of_birth=fake.date_of_birth(minimum_age=30, maximum_age=80),
+                date_of_death=fake.date_between(start_date="-10y", end_date="today")
+                if random.choice([True, False])
+                else None,
                 website=fake.url(),
-                photo=fetch_fake_image()
-                
-            ))
+            )
+            # Fetch author photo
+            author.photo.save(
+                f"{author.first_name}_{author.last_name}.jpg",
+                fetch_image("https://loremflickr.com/300/400/portrait"),
+            )
+            authors.append(author)
+
+        self.stdout.write(self.style.SUCCESS(f"Created {len(authors)} Authors."))
 
         # Create Categories
         categories = []
-        category_names = ["Science Fiction", "Mystery", "Romance", "Adventure", "History","Fiction","Non-Fiction","Educational"]
-        for name in category_names:
-            categories.append(Category.objects.create(
-                name=name,
-                description=fake.text(max_nb_chars=100),
-                logo=fetch_fake_image()
-            ))
+        for _ in range(5):
+            category = Category.objects.create(
+                name=fake.word().capitalize(),
+                description=fake.text(),
+                logo=fake.word(),
+            )
+            categories.append(category)
+
+        self.stdout.write(self.style.SUCCESS(f"Created {len(categories)} Categories."))
 
         # Create Books
         books = []
-        for _ in range(100):
-            books.append(Book.objects.create(
-                title=fake.sentence(nb_words=3),
+        for _ in range(10):
+            book = Book.objects.create(
+                title=fake.sentence(nb_words=4),
                 author=random.choice(authors),
-                description=fake.text(max_nb_chars=500),
-                published_date=fake.date_between(start_date="-20y", end_date="today"),
-                price=random.randint(100, 1000),
+                description=fake.text(),
+                published_date=fake.date_between(start_date="-5y", end_date="today"),
+                price=random.randint(100, 2000),
                 status=random.choice(["draft", "published"]),
                 category=random.choice(categories),
-                cover_image=fetch_fake_image(),
                 is_trending=random.choice([True, False]),
                 is_best_seller=random.choice([True, False]),
-                added_on=timezone.now(),
-                sales_count=random.randint(0, 500)
-            ))
+                sales_count=random.randint(0, 500),
+            )
+            # Fetch book cover image
+            book.cover_image.save(
+                f"{book.title}.jpg",
+                fetch_image("https://loremflickr.com/300/400/book"),
+            )
+            books.append(book)
 
-        # Create Carts
-        carts = []
+        self.stdout.write(self.style.SUCCESS(f"Created {len(books)} Books."))
+
+        # Create Carts and CartItems
         for user in users:
-            carts.append(Cart.objects.create(user=user))
-
-        # Add Items to Carts
-        for cart in carts:
-            for _ in range(random.randint(1, 5)):
+            cart = Cart.objects.create(user=user)
+            for _ in range(random.randint(1, 3)):  # 1-3 items per cart
                 CartItem.objects.create(
-                    cart=cart,
-                    book=random.choice(books),
-                    quantity=random.randint(1, 3)
+                    cart=cart, book=random.choice(books), quantity=random.randint(1, 5)
                 )
 
-        self.stdout.write(self.style.SUCCESS("50 sample data entries created successfully using Faker with images!"))
+        self.stdout.write(self.style.SUCCESS(f"Created Carts & Cart Items."))
 
+        # Create Orders
+        for user in users:
+            if random.choice([True, False]):  # 50% chance to create an order
+                Order.objects.create(
+                    user=user,
+                    total_amount=random.uniform(200, 5000),
+                    status=random.choice(["pending", "completed"]),
+                    shipping_address=fake.address(),
+                    receipt_id=str(uuid.uuid4()),
+                    razorpay_payment_id=str(uuid.uuid4()),
+                )
 
-
-
-# Book
-# from django.core.management.base import BaseCommand
-# from django.utils import timezone
-# from ebooks_app.models import Author, Category, Book
-# from faker import Faker
-# import random
-# from django.core.files.base import ContentFile
-# import requests
-
-# class Command(BaseCommand):
-#     help = "Add new books using existing authors and categories"
-
-#     def handle(self, *args, **kwargs):
-#         fake = Faker()
-
-#         # Helper function to fetch a fake image
-#         def fetch_fake_image():
-#             response = requests.get("https://picsum.photos/200/300", stream=True)
-#             if response.status_code == 200:
-#                 return ContentFile(response.content, name=f"{fake.word()}.jpg")
-#             return None
-
-#         # Get existing authors and categories
-#         authors = list(Author.objects.all())
-#         categories = list(Category.objects.all())
-
-#         if not authors or not categories:
-#             self.stdout.write(self.style.ERROR("Authors or Categories are missing. Add them first."))
-#             return
-
-#         # Create Books
-#         books = []
-#         for _ in range(50):  # Add 20 books
-#             books.append(Book.objects.create(
-#                 title=fake.sentence(nb_words=3),
-#                 author=random.choice(authors),
-#                 description=fake.text(max_nb_chars=500),
-#                 published_date=fake.date_between(start_date="-20y", end_date="today"),
-#                 price=random.randint(100, 1000),
-#                 status=random.choice(["draft", "published"]),
-#                 category=random.choice(categories),
-#                 cover_image=fetch_fake_image(),
-#                 is_trending=random.choice([True, False]),
-#                 is_best_seller=random.choice([True, False]),
-#                 added_on=timezone.now(),
-#                 sales_count=random.randint(0, 500)
-#             ))
-
-#         self.stdout.write(self.style.SUCCESS(f"{len(books)} new books added successfully!"))
+        self.stdout.write(self.style.SUCCESS("Fake Data with Images Generated Successfully!"))

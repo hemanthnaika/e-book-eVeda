@@ -26,7 +26,6 @@
            Books
           </a>
 
-
                 <a href="{% url 'authors' %}" title="" class="text-base text-black transition-all duration-200 hover:text-opacity-80">Authors
                 </a>
                 <a href="{% url 'about' %}" title="" class="text-base text-black transition-all duration-200 hover:text-opacity-80">About
@@ -60,10 +59,15 @@
                         role="button">
                     Log In
                   </a> {% else %}
+                    <div class="flex items-center justify-center gap-5">
+                        <a href="{% url 'view_cart' %}">
+                            <img src="{% static 'assets/cart.png' %}" alt="cart" class="w-10 h-auto">
+                        </a>
 
-                    <a href="{% url 'view_cart' %}">
-                        <img src="{% static 'assets/cart.png' %}" alt="cart" class="w-10 h-auto">
-                    </a>
+                        <a href="{% url 'profile' %}">
+                            <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}/static/assets/user.png{% endif %}" alt="profile" class="w-10 h-10 rounded-full">
+                        </a>
+                    </div>
                     <a class="bg-red-600  px-7 py-2 rounded-md text-white font-medium font-paragraph" href="{% url 'logout' %}">Logout</a> {% endif %}
                 </div>
 

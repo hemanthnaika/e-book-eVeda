@@ -46,7 +46,6 @@ def home(request):
         "form": form
     })
 
-
 def books(request, id=None):
     filter_type = request.GET.get('filter', 'all')
     books = Book.objects.all()  # Default queryset
@@ -262,110 +261,11 @@ def logout(request):
     auth_logout(request)
     return redirect('home')
 
-
-
-razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-
-MIN_ORDER_AMOUNT = 100  # Define a reasonable minimum order amount (in INR)
-
-@login_required(login_url='/login/') 
-def checkout(request):
-    cart = get_object_or_404(Cart, user=request.user)
-    user_location = request.user.location
-    user_phone = request.user.phone
-
-    # Calculate the total amount
-    cart_total_price = cart.get_total_price()  # Example amount in INR
-
-    # Check if the total price is less than the minimum order amount
-    if cart_total_price < MIN_ORDER_AMOUNT:
-        messages.error(
-            request,
-            f"Your order total is ₹{cart_total_price:.2f}, which is less than the minimum allowed amount of ₹{MIN_ORDER_AMOUNT}. Please add more items to your cart."
-        )
-        return redirect("view_cart")  # Redirect to the cart page
-
-    if request.method == "GET":
-        address = request.POST.get('address')
-
-        # Convert the amount to paisa (required by Razorpay)
-        amount = int(cart_total_price * 100)
-
-        # Create Razorpay order
-        razorpay_order = razorpay_client.order.create({
-            "amount": amount,
-            "currency": "INR",
-            "payment_capture": 1
-        })
-
-        context = {
-            "razorpay_key_id": settings.RAZORPAY_KEY_ID,
-            "amount": amount,
-            "currency": "INR",
-            "razorpay_order_id": razorpay_order["id"],
-            "cart": cart,
-            "location": user_location,
-            "phone": user_phone,
-        }
-
-        return render(request, "pages/checkout.html", context)
  
-@login_required(login_url='/login/') 
-def create_order(user, cart, payment_data):
-   
-    cart = Cart.objects.filter(user=user).first()   
-    cart_items = CartItem.objects.filter(cart=cart)
-    shipping_address = user.location
-
-    # Create a new order
-    order = Order.objects.create(
-        user=user,
-        total_amount=cart.get_total_price(),
-        status='completed',
-        shipping_address=shipping_address,
-        receipt_id=payment_data['razorpay_payment_id'],
-        razorpay_payment_id=payment_data['razorpay_payment_id'],
-        
-    )
-    for cart_item in cart_items:
-                order_item = OrderItem.objects.create(order=order, book=cart_item.book, quantity=cart_item.quantity)
-                order_item.save()
-                print(order_item)
-    cart.items.all().delete()
-    
-    return order
-
-
-@login_required(login_url='/login/') 
-def verify_payment(request):
-    
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-
-            # Verify Razorpay signature
-            razorpay_client.utility.verify_payment_signature({
-                "razorpay_order_id": data["razorpay_order_id"],
-                "razorpay_payment_id": data["razorpay_payment_id"],
-                "razorpay_signature": data["razorpay_signature"]
-            })
-
-            # Fetch the user's cart
-            cart = get_object_or_404(Cart, user=request.user)
-
-            # Create the order
-            order = create_order(request.user, cart, data)
-            # Respond with success
-            return JsonResponse({"status": "success"})
-
-        except razorpay.errors.SignatureVerificationError:
-            return JsonResponse({"status": "Payment verification failed!"}, status=400)
-
-    return JsonResponse({"status": "Invalid request"}, status=400)
-
 @login_required
 def user_orders(request):
     # Retrieve all orders for the logged-in user
+    
     orders = Order.objects.filter(user=request.user).order_by('-order_date')
     return render(request, 'pages/user_orders.html', {'orders': orders})
 
@@ -375,3 +275,103 @@ def order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order_items = order.order_items.all()
     return render(request, 'pages/order_detail.html', {'order': order, 'order_items': order_items})
+
+
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+MIN_ORDER_AMOUNT = 100  # Minimum order amount in INR
+
+@login_required(login_url='/login/')
+def checkout(request):
+    cart = get_object_or_404(Cart, user=request.user)
+
+    # Check if the user has a phone number
+    if not request.user.phone or not request.user.location:
+        # If phone number or address is missing, redirect to profile page with a message
+        messages.warning(
+            request,
+            "Please complete your profile by adding your phone number and address before proceeding to checkout."
+        )
+        return redirect("profile") 
+
+    cart_total_price = cart.get_total_price()  # Cart total in INR
+    
+    if cart_total_price < MIN_ORDER_AMOUNT:
+        messages.error(
+            request,
+            f"Your order total is ₹{cart_total_price:.2f}, which is less than the minimum allowed amount of ₹{MIN_ORDER_AMOUNT}. Please add more items to your cart."
+        )
+        return redirect("view_cart")
+
+    if request.method == "GET":
+        amount_in_paisa = int(cart_total_price * 100)
+
+        razorpay_order = razorpay_client.order.create({
+            "amount": amount_in_paisa,
+            "currency": "INR",
+            "payment_capture": 1
+        })
+
+        context = {
+            "razorpay_key_id": settings.RAZORPAY_KEY_ID,
+            "amount": amount_in_paisa,
+            "currency": "INR",
+            "razorpay_order_id": razorpay_order["id"],
+            "cart": cart,
+            "user": request.user,
+        }
+
+        return render(request, "pages/checkout.html", context)
+
+def create_order(user, cart, payment_data):
+    cart_items = CartItem.objects.filter(cart=cart)
+
+    # Create the order
+    order = Order.objects.create(
+        user=user,
+        total_amount=cart.get_total_price(),
+        status='pending',
+        shipping_address=user.location,  # Customize based on your model
+        receipt_id=payment_data['razorpay_payment_id'],
+        razorpay_payment_id=payment_data['razorpay_payment_id'],
+    )
+
+    # Add items to the order
+    for cart_item in cart_items:
+        OrderItem.objects.create(
+            order=order,
+            book=cart_item.book,
+            quantity=cart_item.quantity
+        )
+
+    # Clear the cart
+    cart.items.all().delete()
+
+    return order
+
+@login_required(login_url='/login/')
+def verify_payment(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            razorpay_client.utility.verify_payment_signature({
+                "razorpay_order_id": data["razorpay_order_id"],
+                "razorpay_payment_id": data["razorpay_payment_id"],
+                "razorpay_signature": data["razorpay_signature"]
+            })
+
+            cart = get_object_or_404(Cart, user=request.user)
+
+            payment_data = {
+                "razorpay_payment_id": data["razorpay_payment_id"],
+                "razorpay_order_id": data["razorpay_order_id"],
+            }
+            order = create_order(request.user, cart, payment_data)
+
+            return JsonResponse({"status": "success"})
+
+        except razorpay.errors.SignatureVerificationError:
+            return JsonResponse({"status": "Payment verification failed!"}, status=400)
+
+    return JsonResponse({"status": "Invalid request"}, status=400)
