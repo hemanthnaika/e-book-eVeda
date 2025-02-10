@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
         # Create Authors
         authors = []
-        for _ in range(5):
+        for _ in range(20):
             author = Author.objects.create(
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
@@ -67,7 +67,7 @@ class Command(BaseCommand):
 
         # Create Categories
         categories = []
-        for _ in range(5):
+        for _ in range(10):
             category = Category.objects.create(
                 name=fake.word().capitalize(),
                 description=fake.text(),
@@ -79,7 +79,7 @@ class Command(BaseCommand):
 
         # Create Books
         books = []
-        for _ in range(10):
+        for _ in range(50):
             book = Book.objects.create(
                 title=fake.sentence(nb_words=4),
                 author=random.choice(authors),
