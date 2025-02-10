@@ -18,8 +18,6 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -30,7 +28,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-admidg*6^p*n+1jccmat^kg@(q__ave^t&b73*4i^0wxcks&%n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost','eVeda.pythonanywhere.com']
 
@@ -133,9 +131,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-
-
-
 # Required for production if DEBUG is False
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -154,10 +149,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'login/'  # Redirect to login after logout
 
 
-
-
-
-
 # Razorpay API keys
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET')
@@ -172,3 +163,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'bg-red-100 border-red-500 text-red-700',
 }
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

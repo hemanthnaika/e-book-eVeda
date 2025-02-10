@@ -26,6 +26,9 @@ config/settings/*.local
 **/migrations/*.pyc
 **/migrations/__pycache__/
 
+# Static and media files
+/static/
+staticfiles/
 
 
 # Ignore package dependencies
